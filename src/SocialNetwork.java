@@ -1,4 +1,3 @@
-
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -48,10 +47,6 @@ public class SocialNetwork implements ISocialNetwork {
 		first.getOutgoingRequests().remove(second.getUserName());
 		second.getIncomingRequests().remove(first.getUserName());
 		second.getOutgoingRequests().remove(first.getUserName());
-	}
-
-	public Account getLoggedInUser() {
-		return loggedInUser;
 	}
 
 	@Override
@@ -261,7 +256,6 @@ public class SocialNetwork implements ISocialNetwork {
 		try {
 			sendFriendshipTo(userName);
 		} catch (NoUserLoggedInException e) {
-			// logged-in user was set above
 		}
 		loggedInUser = previous;
 	}
@@ -272,7 +266,6 @@ public class SocialNetwork implements ISocialNetwork {
 		try {
 			acceptFriendshipFrom(userName);
 		} catch (NoUserLoggedInException e) {
-			// logged-in user was set above
 		}
 		loggedInUser = previous;
 	}
@@ -283,7 +276,6 @@ public class SocialNetwork implements ISocialNetwork {
 		try {
 			acceptAllFriendships();
 		} catch (NoUserLoggedInException e) {
-			// logged-in user was set above
 		}
 		loggedInUser = previous;
 	}
@@ -294,7 +286,6 @@ public class SocialNetwork implements ISocialNetwork {
 		try {
 			rejectFriendshipFrom(userName);
 		} catch (NoUserLoggedInException e) {
-			// logged-in user was set above
 		}
 		loggedInUser = previous;
 	}
@@ -305,7 +296,6 @@ public class SocialNetwork implements ISocialNetwork {
 		try {
 			rejectAllFriendships();
 		} catch (NoUserLoggedInException e) {
-			// logged-in user was set above
 		}
 		loggedInUser = previous;
 	}
@@ -316,7 +306,6 @@ public class SocialNetwork implements ISocialNetwork {
 		try {
 			autoAcceptFriendships();
 		} catch (NoUserLoggedInException e) {
-			// logged-in user was set above
 		}
 		loggedInUser = previous;
 	}
@@ -327,7 +316,6 @@ public class SocialNetwork implements ISocialNetwork {
 		try {
 			sendFriendshipCancellationTo(userName);
 		} catch (NoUserLoggedInException e) {
-			// logged-in user was set above
 		}
 		loggedInUser = previous;
 	}

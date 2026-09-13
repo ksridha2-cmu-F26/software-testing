@@ -6,6 +6,8 @@ import java.util.Set;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
+
 public class SocialNetworkTest {
 
 	SocialNetwork sn;
@@ -877,14 +879,6 @@ public class SocialNetworkTest {
 	public void leaveThrowsWhenNotLoggedIn() throws Exception {
 		sn = new SocialNetwork();
 		sn.leave();
-	}
-
-	@Test
-	public void login_whenValidAccount_setsLoggedInUser() throws Exception {
-		sn = new SocialNetwork();
-		me = sn.join("Hakan");
-		sn.login(me);
-		assertEquals(me, sn.getLoggedInUser());
 	}
 
 }

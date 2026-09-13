@@ -1,5 +1,3 @@
-package edu.cmu;
-
 import java.util.Set;
 
 public interface ISocialNetwork {
