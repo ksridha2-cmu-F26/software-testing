@@ -1,4 +1,3 @@
-package edu.cmu;
 
 import static org.junit.Assert.*;
 

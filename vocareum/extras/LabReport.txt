@@ -1,0 +1,47 @@
+L1 TDD Lab Report
+Name: [Your Name]
+Andrew ID: [Your Andrew ID]
+Partner (if any): [Partner Name / Solo]
+
+Tasks Completed
+- T1: SocialNetwork implements ISocialNetwork with stub methods; Collection replaced with Set.
+- T2: login(Account) implemented; getLoggedInUser() added for test visibility; old Account-parameter API delegates to new login-based API.
+- T3: hasMember(String) implemented with visibility rules.
+- T4: cancelAutoAcceptFriendships() implemented on Account and SocialNetwork.
+- T5: block(String) implemented; blocked members cannot see or request the blocker.
+- T6: unblock(String) implemented.
+- T7: recommendFriends() implemented (>=2 mutual friends, excludes friends/blocked/invisible).
+- T8: block() terminates existing friendships and pending requests (TDD tests added).
+- T9: NoUserLoggedInException thrown when operations run without login (TDD tests added).
+
+TDD Approach (Red-Green-Refactor)
+1. T1 used compile errors as guidance to add interface stubs without new tests.
+2. T2 started with login tests from starter code, then added getLoggedInUser() test to expose login side effects.
+3. T3-T7 followed starter tests: write/adapt test first, watch it fail, implement minimal production code, refactor.
+4. T8 added three focused tests for friendship/pending cleanup on block, then implemented terminateRelationshipsBetween().
+5. T9 added expected-exception tests one operation at a time, then ensured requireLoggedIn() guards all interface methods.
+
+Challenges
+- API migration (T2): old methods used Account parameters; new API uses logged-in user. Kept old methods delegating via temporary login to avoid breaking A0 tests while migrating.
+- requestFriendship direction: receiver.requestFriendship(sender) is easy to invert in tests; helper methods (sendFriendRequest, makeFriends) reduced confusion.
+- Blocking visibility (T5/T6): visibility depends on who blocked whom; recommendFriends must also respect blocked/invisible members.
+- T8 interaction: block must remove friendships and pending requests in both directions without breaking unblock/re-friend flows.
+
+Tests Added (beyond A0/starter)
+- T8: blockingTerminatesExistingFriendship, blockingTerminatesPendingIncomingFriendRequest, blockingTerminatesPendingOutgoingFriendRequest
+- T9: listMembersThrowsWhenNotLoggedIn, hasMemberThrowsWhenNotLoggedIn, sendFriendshipToThrowsWhenNotLoggedIn, blockThrowsWhenNotLoggedIn, acceptAllFriendshipsThrowsWhenNotLoggedIn, leaveThrowsWhenNotLoggedIn
+- T2: login_whenValidAccount_setsLoggedInUser
+- Account: cancelAutoAcceptFriendships_whenEnabled_stopsAutoAcceptance, block/unblock tests
+
+Outcome
+- All 81 local unit tests pass (11 AccountTest + 70 SocialNetworkTest).
+- Old and new API coexist; old API delegates to new API for gradual migration per assignment instructions.
+
+Lessons Learned
+- TDD works best in small steps: one test, one behavior, one green commit mindset.
+- Compile errors after implementing an interface are useful scaffolding (T1).
+- Delegation let us migrate API without rewriting every test at once.
+- Exception tests (T9) are easier to add incrementally than retrofitting login checks everywhere at once.
+
+Assignment Feedback (optional)
+- Starter test file still mixes old/new API in a few places (e.g., sendFriendshipTo with Account); clearer migration checkpoints would help.
