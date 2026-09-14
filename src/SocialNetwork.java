@@ -38,6 +38,17 @@ public class SocialNetwork implements ISocialNetwork {
 		return !account.hasBlocked(loggedInUser.getUserName());
 	}
 
+	private void terminateRelationshipsBetween(Account first, Account second) {
+		if (first == null || second == null) {
+			return;
+		}
+		first.cancelFriendship(second);
+		first.getIncomingRequests().remove(second.getUserName());
+		first.getOutgoingRequests().remove(second.getUserName());
+		second.getIncomingRequests().remove(first.getUserName());
+		second.getOutgoingRequests().remove(first.getUserName());
+	}
+
 	@Override
 	public Account join(String userName) {
 		if (userName == null || userName.isEmpty()) {
@@ -103,6 +114,7 @@ public class SocialNetwork implements ISocialNetwork {
 		if (userName == null) {
 			return;
 		}
+		terminateRelationshipsBetween(loggedInUser, findAccountForUserName(userName));
 		loggedInUser.block(userName);
 	}
 
@@ -182,7 +194,26 @@ public class SocialNetwork implements ISocialNetwork {
 	@Override
 	public Set<String> recommendFriends() throws NoUserLoggedInException {
 		requireLoggedIn();
-		return new HashSet<String>();
+		Set<String> recommendations = new HashSet<String>();
+		for (Account candidate : accounts) {
+			if (candidate == loggedInUser || loggedInUser.hasFriend(candidate.getUserName())
+					|| !isVisibleToLoggedInUser(candidate)
+					|| loggedInUser.hasBlocked(candidate.getUserName())) {
+				continue;
+			}
+
+			int mutualFriends = 0;
+			for (String friendName : loggedInUser.getFriends()) {
+				Account friend = findAccountForUserName(friendName);
+				if (friend != null && friend.hasFriend(candidate.getUserName())) {
+					mutualFriends++;
+				}
+			}
+			if (mutualFriends >= 2) {
+				recommendations.add(candidate.getUserName());
+			}
+		}
+		return recommendations;
 	}
 
 	@Override

@@ -1,28 +1,29 @@
-L1 TDD Lab Report
-Name: [Your Name]
-Andrew ID: [Your Andrew ID]
-Partner (if any): [Partner Name / Solo]
+LAB REPORT - TDD - L1
 
-Tasks Completed So Far: T1 through T6
+Name: Karthik Sridhar
+Andrew ID:
 
-TDD Approach:
-- T1: Implemented ISocialNetwork stubs guided by compile errors; kept old A0 API.
-- T2: Wrote login tests first, then implemented login(Account).
-- T3: Tests for hasMember, then implementation with visibility rules.
-- T4: Tests for cancelAutoAcceptFriendships, then Account + SocialNetwork code.
-- T5: Tests for block behavior, then block(String) implementation.
-- T6: Tests for unblock, then unblock(String) implementation.
+1. Summary
 
-Challenges:
-- Migrating from Account-parameter API to login-based API (T2).
-- Understanding block visibility: blocked user cannot see blocker.
+In this lab, I changed the SocialNetwork class to implement ISocialNetwork and gradually moved the application to a login-based API. I completed tasks T1 through T10. The tasks included login, member visibility, blocking and unblocking, auto-accept cancellation, friend recommendations, cleanup of friendships after blocking, and NoUserLoggedInException.
 
-Tests Added: login tests, hasMember tests, block/unblock tests, cancelAutoAccept tests.
+I ended up with 64 tests: 10 tests in AccountTest and 54 tests in SocialNetworkTest. All of my tests pass.
 
-Outcome: Local unit tests pass for T1-T6 scope.
+2. What worked well?
 
-Lessons Learned:
-- TDD in small steps (one test, one fix) kept the lab manageable.
-- Login must be called before listMembers and other operations after T2.
+Writing a test before changing the code helped me focus on one behavior at a time. For example, for friend recommendations, I first wrote tests for a member with two mutual friends and a member with only one mutual friend. These tests made the required behavior clear before I implemented recommendFriends().
 
-Not Yet Completed: T7 (recommendFriends), T8 (block cleanup), T9 (NoUserLoggedInException), T10 (final report polish).
+3. What didn't work well?
+
+The most difficult part was keeping track of which account was sending a friend request and which account was receiving it. The old methods used Account parameters, while the new methods used the logged-in account. This made some tests confusing and caused mistakes in the setup.
+
+Another issue was the checked NoUserLoggedInException. My local tests initially passed, but the Vocareum reference tests could not compile because the exception was not declared in the interface. I had to update the interface and the implementation to use the required exception.
+
+4. How would you do it differently next time when applying TDD?
+
+Next time, I would create small helper methods for common actions such as sending and accepting a friend request. I would also migrate the old API tests earlier instead of keeping both APIs for so long. This would make it easier to see which account is logged in and reduce confusion in the test setup.
+
+5. Comments and Suggestions on the Lab (Optional)
+
+- The assignment requires both the old API and the new login-based API during the transition, which can make the code and tests difficult to follow.
+- The checked exception requirement is important for the hidden tests, so it would be helpful to emphasize earlier that the exception must be declared in ISocialNetwork.

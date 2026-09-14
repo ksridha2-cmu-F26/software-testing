@@ -606,4 +606,156 @@ public class SocialNetworkTest {
 		assertEquals(1, me.getIncomingRequests().size());
 	}
 
+	private interface NetworkOperation {
+		void run() throws NoUserLoggedInException;
+	}
+
+	private void assertRequiresLogin(NetworkOperation operation) {
+		try {
+			operation.run();
+			fail("Expected NoUserLoggedInException");
+		} catch (NoUserLoggedInException expected) {
+			// Expected for an operation issued before login.
+		}
+	}
+
+	@Test
+	public void recommendFriends_whenCandidateSharesTwoFriends_returnsCandidate() throws Exception {
+		sn = new SocialNetwork();
+		me = sn.join("Hakan");
+		her = sn.join("Cecile");
+		another = sn.join("Serra");
+		Account candidate = sn.join("Priya");
+
+		sn.sendFriendshipTo("Hakan", her);
+		sn.acceptFriendshipFrom("Cecile", me);
+		sn.sendFriendshipTo("Hakan", another);
+		sn.acceptFriendshipFrom("Serra", me);
+		sn.sendFriendshipTo("Cecile", candidate);
+		sn.acceptFriendshipFrom("Priya", her);
+		sn.sendFriendshipTo("Serra", candidate);
+		sn.acceptFriendshipFrom("Priya", another);
+
+		sn.login(me);
+		assertTrue(sn.recommendFriends().contains("Priya"));
+	}
+
+	@Test
+	public void recommendFriends_whenCandidateSharesOneFriend_doesNotReturnCandidate() throws Exception {
+		sn = new SocialNetwork();
+		me = sn.join("Hakan");
+		her = sn.join("Cecile");
+		Account candidate = sn.join("Priya");
+
+		sn.sendFriendshipTo("Hakan", her);
+		sn.acceptFriendshipFrom("Cecile", me);
+		sn.sendFriendshipTo("Cecile", candidate);
+		sn.acceptFriendshipFrom("Priya", her);
+
+		sn.login(me);
+		assertFalse(sn.recommendFriends().contains("Priya"));
+	}
+
+	@Test
+	public void recommendFriends_whenCandidateIsAlreadyFriend_doesNotReturnCandidate() throws Exception {
+		sn = new SocialNetwork();
+		me = sn.join("Hakan");
+		her = sn.join("Cecile");
+		another = sn.join("Serra");
+
+		sn.sendFriendshipTo("Hakan", her);
+		sn.acceptFriendshipFrom("Cecile", me);
+		sn.sendFriendshipTo("Hakan", another);
+		sn.acceptFriendshipFrom("Serra", me);
+		sn.sendFriendshipTo("Hakan", another);
+		sn.acceptFriendshipFrom("Serra", me);
+
+		sn.login(me);
+		assertFalse(sn.recommendFriends().contains("Cecile"));
+	}
+
+	@Test
+	public void block_whenMembersAreFriends_removesFriendshipFromBothAccounts() throws Exception {
+		sn = new SocialNetwork();
+		me = sn.join("Hakan");
+		her = sn.join("Cecile");
+		sn.sendFriendshipTo("Hakan", her);
+		sn.acceptFriendshipFrom("Cecile", me);
+		sn.login(me);
+		sn.block("Cecile");
+		assertFalse(me.hasFriend("Cecile"));
+		assertFalse(her.hasFriend("Hakan"));
+	}
+
+	@Test
+	public void block_whenMemberHasIncomingRequest_clearsBothRequestSets() throws Exception {
+		sn = new SocialNetwork();
+		me = sn.join("Hakan");
+		her = sn.join("Cecile");
+		sn.sendFriendshipTo("Hakan", her);
+		sn.login(me);
+		sn.block("Cecile");
+		assertTrue(me.getIncomingRequests().isEmpty());
+		assertTrue(her.getOutgoingRequests().isEmpty());
+	}
+
+	@Test
+	public void block_whenMemberHasOutgoingRequest_clearsBothRequestSets() throws Exception {
+		sn = new SocialNetwork();
+		me = sn.join("Hakan");
+		her = sn.join("Cecile");
+		sn.sendFriendshipTo("Cecile", me);
+		sn.login(me);
+		sn.block("Cecile");
+		assertTrue(her.getIncomingRequests().isEmpty());
+		assertTrue(me.getOutgoingRequests().isEmpty());
+	}
+
+	@Test
+	public void socialNetworkOperation_whenNotLoggedIn_throwsNoUserLoggedInException() {
+		sn = new SocialNetwork();
+		assertRequiresLogin(new NetworkOperation() {
+			public void run() throws NoUserLoggedInException { sn.listMembers(); }
+		});
+		assertRequiresLogin(new NetworkOperation() {
+			public void run() throws NoUserLoggedInException { sn.hasMember("Hakan"); }
+		});
+		assertRequiresLogin(new NetworkOperation() {
+			public void run() throws NoUserLoggedInException { sn.sendFriendshipTo("Hakan"); }
+		});
+		assertRequiresLogin(new NetworkOperation() {
+			public void run() throws NoUserLoggedInException { sn.block("Hakan"); }
+		});
+		assertRequiresLogin(new NetworkOperation() {
+			public void run() throws NoUserLoggedInException { sn.unblock("Hakan"); }
+		});
+		assertRequiresLogin(new NetworkOperation() {
+			public void run() throws NoUserLoggedInException { sn.sendFriendshipCancellationTo("Hakan"); }
+		});
+		assertRequiresLogin(new NetworkOperation() {
+			public void run() throws NoUserLoggedInException { sn.acceptFriendshipFrom("Hakan"); }
+		});
+		assertRequiresLogin(new NetworkOperation() {
+			public void run() throws NoUserLoggedInException { sn.acceptAllFriendships(); }
+		});
+		assertRequiresLogin(new NetworkOperation() {
+			public void run() throws NoUserLoggedInException { sn.rejectFriendshipFrom("Hakan"); }
+		});
+		assertRequiresLogin(new NetworkOperation() {
+			public void run() throws NoUserLoggedInException { sn.rejectAllFriendships(); }
+		});
+		assertRequiresLogin(new NetworkOperation() {
+			public void run() throws NoUserLoggedInException { sn.autoAcceptFriendships(); }
+		});
+		assertRequiresLogin(new NetworkOperation() {
+			public void run() throws NoUserLoggedInException { sn.cancelAutoAcceptFriendships(); }
+		});
+		assertRequiresLogin(new NetworkOperation() {
+			public void run() throws NoUserLoggedInException { sn.recommendFriends(); }
+		});
+		assertRequiresLogin(new NetworkOperation() {
+			public void run() throws NoUserLoggedInException { sn.leave(); }
+		});
+	}
+
 }
