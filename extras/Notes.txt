@@ -1,0 +1,37 @@
+@ExtendsWith(MockitoExtension.class)
+above the class
+
+@Mock
+above the things for which we do not want to create any object
+
+Example -> want to make use of service and a repository inside of service
+@InjectMock to do that so that we don't get null inside of the service
+
+Mockito.when(productRepository.save(product)).thenReturn(product)
+
+@BeforeAll -> when we want to have something before all methods --> have to be STATIC method
+@BeforeEach -> going to be printed before all the methods
+
+@AfterEach -> after each test
+@AfterAll -> STATIC -> for final cleanup
+
+Mockito.verify(productRepository, times(1)).deleteById(1) --> this tells is this called 1 time
+Mockito.doNothing().when(productRepository).deleteById(1)
+
+.invoke() ? --> understand this ?
+
+times(x), never(), atLeast(2)
+
+
+when -> then case ->
+when -> thenReturn
+when -> thenThrow
+
+in general -> when then
+also -> when void return type -> doThrow when
+
+
+
+spy -> ? research about this
+
+
