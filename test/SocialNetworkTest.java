@@ -66,7 +66,7 @@ public class SocialNetworkTest {
 	}
 	
 	@Test
-	public void canLoginAfterJoining() throws Exception {
+	public void login_whenValidAccount_returnsLoggedInAccount() throws Exception {
 		sn = new SocialNetwork();
 		Account account = sn.join("Hakan");
 		Account loggedIn = sn.login(account);
@@ -75,14 +75,14 @@ public class SocialNetworkTest {
 	}
 
 	@Test
-	public void loginReturnsNullForNullAccount() throws Exception {
+	public void login_whenNullAccount_returnsNull() throws Exception {
 		sn = new SocialNetwork();
 		Account loggedIn = sn.login(null);
 		assertNull(loggedIn);
 	}
 
 	@Test
-	public void cannotLoginWithAccountNotInNetwork() throws Exception {
+	public void login_whenAccountNotInNetwork_returnsNull() throws Exception {
 		sn = new SocialNetwork();
 		Account account = new Account("Hakan");
 		Account loggedIn = sn.login(account);
@@ -90,7 +90,7 @@ public class SocialNetworkTest {
 	}
 
 	@Test
-	public void canSwitchAccountsWithoutLoggingOut() throws Exception {
+	public void login_whenSwitchingAccounts_returnsNewAccount() throws Exception {
 		sn = new SocialNetwork();
 		me = sn.join("Hakan");
 		her = sn.join("Cecile");
@@ -107,7 +107,7 @@ public class SocialNetworkTest {
 	}
 
 	@Test
-	public void loginMultipleTimes() throws Exception {
+	public void login_whenSameAccountTwice_returnsAccount() throws Exception {
 		sn = new SocialNetwork();
 		me = sn.join("Hakan");
 		
@@ -124,7 +124,7 @@ public class SocialNetworkTest {
 	// ----- T3: hasMember -----
 
 	@Test
-	public void hasMemberIsTrueForAMemberWhoJoined() throws Exception {
+	public void hasMember_whenMemberJoined_returnsTrue() throws Exception {
 		sn = new SocialNetwork();
 		me = sn.join("Hakan");
 		sn.join("Cecile");
@@ -133,7 +133,7 @@ public class SocialNetworkTest {
 	}
 
 	@Test
-	public void hasMemberIsTrueForTheLoggedInMemberHerself() throws Exception {
+	public void hasMember_whenLoggedInMember_returnsTrue() throws Exception {
 		sn = new SocialNetwork();
 		me = sn.join("Hakan");
 		sn.login(me);
@@ -141,7 +141,7 @@ public class SocialNetworkTest {
 	}
 
 	@Test
-	public void hasMemberIsFalseForSomeoneWhoNeverJoined() throws Exception {
+	public void hasMember_whenNeverJoined_returnsFalse() throws Exception {
 		sn = new SocialNetwork();
 		me = sn.join("Hakan");
 		sn.login(me);
@@ -149,7 +149,7 @@ public class SocialNetworkTest {
 	}
 
 	@Test
-	public void hasMemberIsFalseForNullUserName() throws Exception {
+	public void hasMember_whenNullUserName_returnsFalse() throws Exception {
 		sn = new SocialNetwork();
 		me = sn.join("Hakan");
 		sn.login(me);
@@ -159,7 +159,7 @@ public class SocialNetworkTest {
 	// ----- T5: block -----
 
 	@Test
-	public void loggedInMemberCanSendAFriendRequestWithTheNewApi() throws Exception {
+	public void sendFriendshipTo_whenLoggedIn_addsIncomingRequest() throws Exception {
 		sn = new SocialNetwork();
 		me = sn.join("Hakan");
 		her = sn.join("Cecile");
@@ -169,7 +169,7 @@ public class SocialNetworkTest {
 	}
 
 	@Test
-	public void aBlockedMemberCannotSeeTheBlocker() throws Exception {
+	public void hasMember_whenBlockedMemberLooksUpBlocker_returnsFalse() throws Exception {
 		sn = new SocialNetwork();
 		me = sn.join("Hakan");
 		her = sn.join("Cecile");
@@ -180,7 +180,7 @@ public class SocialNetworkTest {
 	}
 
 	@Test
-	public void aBlockedMemberDoesNotSeeTheBlockerInTheMemberList() throws Exception {
+	public void listMembers_whenBlockedMemberLoggedIn_excludesBlocker() throws Exception {
 		sn = new SocialNetwork();
 		me = sn.join("Hakan");
 		her = sn.join("Cecile");
@@ -192,7 +192,7 @@ public class SocialNetworkTest {
 	}
 
 	@Test
-	public void theBlockerCanStillSeeTheBlockedMember() throws Exception {
+	public void hasMember_whenBlockerLooksUpBlockedMember_returnsTrue() throws Exception {
 		sn = new SocialNetwork();
 		me = sn.join("Hakan");
 		sn.join("Cecile");
@@ -202,7 +202,7 @@ public class SocialNetworkTest {
 	}
 
 	@Test
-	public void blockingDoesNotAffectOtherMembers() throws Exception {
+	public void hasMember_whenThirdMemberLooksUpBlocker_returnsTrue() throws Exception {
 		sn = new SocialNetwork();
 		me = sn.join("Hakan");
 		sn.join("Cecile");
@@ -214,7 +214,7 @@ public class SocialNetworkTest {
 	}
 
 	@Test
-	public void aBlockedMemberCannotSendAFriendRequestToTheBlocker() throws Exception {
+	public void sendFriendshipTo_whenBlockedMemberToBlocker_doesNotAddRequest() throws Exception {
 		sn = new SocialNetwork();
 		me = sn.join("Hakan");
 		her = sn.join("Cecile");
@@ -226,7 +226,7 @@ public class SocialNetworkTest {
 	}
 
 	@Test
-	public void aMemberShouldBeAbleToAcceptAllFriendRequestsAtOnce() throws Exception {
+	public void acceptAllFriendships_whenMultipleIncoming_becomesFriendsWithAll() throws Exception {
 		sn = new SocialNetwork();
 		me = sn.join("Cecile");
 		Account hakan = sn.join("Hakan");
@@ -245,7 +245,7 @@ public class SocialNetworkTest {
 	}
 
 	@Test
-	public void aMemberShouldBeAbleToRejectAllFriendRequestsAtOnce() throws Exception {
+	public void rejectAllFriendships_whenMultipleIncoming_rejectsAllRequests() throws Exception {
 		sn = new SocialNetwork();
 		me = sn.join("Cecile");
 		Account hakan = sn.join("Hakan");
@@ -268,7 +268,7 @@ public class SocialNetworkTest {
 	// ----- T6: unblock -----
 
 	@Test
-	public void unblockingMakesTheBlockerVisibleAgain() throws Exception {
+	public void hasMember_whenUnblockedMemberLooksUpBlocker_returnsTrue() throws Exception {
 		sn = new SocialNetwork();
 		me = sn.join("Hakan");
 		her = sn.join("Cecile");
@@ -280,7 +280,7 @@ public class SocialNetworkTest {
 	}
 
 	@Test
-	public void anUnblockedMemberSeesTheBlockerInTheMemberListAgain() throws Exception {
+	public void listMembers_whenUnblockedMemberLoggedIn_includesBlocker() throws Exception {
 		sn = new SocialNetwork();
 		me = sn.join("Hakan");
 		her = sn.join("Cecile");
@@ -292,7 +292,7 @@ public class SocialNetworkTest {
 	}
 
 	@Test
-	public void anUnblockedMemberCanBefriendTheBlockerAgain() throws Exception {
+	public void sendFriendshipTo_whenUnblockedMemberToBlocker_addsIncomingRequest() throws Exception {
 		sn = new SocialNetwork();
 		me = sn.join("Hakan");
 		her = sn.join("Cecile");
@@ -305,7 +305,7 @@ public class SocialNetworkTest {
 	}
 
 	@Test
-	public void unblockingOneMemberLeavesOtherBlocksInPlace() throws Exception {
+	public void unblock_whenOneMemberUnblocked_leavesOtherBlocksInPlace() throws Exception {
 		sn = new SocialNetwork();
 		me = sn.join("Hakan");
 		her = sn.join("Cecile");
@@ -321,7 +321,7 @@ public class SocialNetworkTest {
 	}
 
 	@Test
-	public void unblockingAMemberWhoWasNeverBlockedChangesNothing() throws Exception {
+	public void unblock_whenMemberNeverBlocked_changesNothing() throws Exception {
 		sn = new SocialNetwork();
 		me = sn.join("Hakan");
 		her = sn.join("Cecile");
@@ -332,7 +332,7 @@ public class SocialNetworkTest {
 	}
 
 	@Test
-	public void unblockingANullUserNameIsHarmless() throws Exception {
+	public void unblock_whenNullUserName_doesNothing() throws Exception {
 		sn = new SocialNetwork();
 		me = sn.join("Hakan");
 		sn.login(me);
@@ -344,14 +344,14 @@ public class SocialNetworkTest {
 
 	/*
 	@Test
-	public void hasMemberIsFalseForEveryNameOnAnEmptyNetwork() throws Exception {
+	public void hasMember_whenEmptyNetwork_returnsFalse() throws Exception {
 		sn = new SocialNetwork();
 		assertFalse(sn.hasMember("Hakan"));
 	}
 	*/
 
 	@Test
-	public void hasMemberIsFalseForAnEmptyUserName() throws Exception {
+	public void hasMember_whenEmptyUserName_returnsFalse() throws Exception {
 		sn = new SocialNetwork();
 		me = sn.join("Hakan");
 		sn.login(me);
@@ -359,7 +359,7 @@ public class SocialNetworkTest {
 	}
 
 	@Test
-	public void hasMemberIsCaseSensitive() throws Exception {
+	public void hasMember_whenCaseMismatch_returnsFalse() throws Exception {
 		sn = new SocialNetwork();
 		me = sn.join("Hakan");
 		sn.login(me);
@@ -369,7 +369,7 @@ public class SocialNetworkTest {
 	}
 
 	@Test
-	public void hasMemberSeesSomebodyWhoJoinsAfterLogin() throws Exception {
+	public void hasMember_whenMemberJoinsAfterLogin_returnsTrue() throws Exception {
 		sn = new SocialNetwork();
 		me = sn.join("Hakan");
 		sn.login(me);
@@ -379,7 +379,7 @@ public class SocialNetworkTest {
 	}
 
 	@Test
-	public void hasMemberIsFalseOnceThatMemberHasLeft() throws Exception {
+	public void hasMember_whenMemberHasLeft_returnsFalse() throws Exception {
 		sn = new SocialNetwork();
 		me = sn.join("Hakan");
 		her = sn.join("Cecile");
@@ -390,7 +390,7 @@ public class SocialNetworkTest {
 	}
 
 	@Test
-	public void hasMemberIsTrueForEveryMemberOfALargerNetwork() throws Exception {
+	public void hasMember_whenLargerNetwork_returnsTrueForAllMembers() throws Exception {
 		sn = new SocialNetwork();
 		me = sn.join("Hakan");
 		sn.join("Cecile");
@@ -405,7 +405,7 @@ public class SocialNetworkTest {
 	// ----- T5: block, further cases -----
 
 	@Test
-	public void blockingTheSameMemberTwiceIsIdempotent() throws Exception {
+	public void block_whenSameMemberTwice_isIdempotent() throws Exception {
 		sn = new SocialNetwork();
 		me = sn.join("Hakan");
 		her = sn.join("Cecile");
@@ -417,7 +417,7 @@ public class SocialNetworkTest {
 	}
 
 	@Test
-	public void blockingANullUserNameIsHarmless() throws Exception {
+	public void block_whenNullUserName_doesNothing() throws Exception {
 		sn = new SocialNetwork();
 		me = sn.join("Hakan");
 		her = sn.join("Cecile");
@@ -428,7 +428,7 @@ public class SocialNetworkTest {
 	}
 
 	@Test
-	public void blockingSomeoneWhoIsNotAMemberIsHarmless() throws Exception {
+	public void block_whenNotAMember_doesNothing() throws Exception {
 		sn = new SocialNetwork();
 		me = sn.join("Hakan");
 		her = sn.join("Cecile");
@@ -439,7 +439,7 @@ public class SocialNetworkTest {
 	}
 
 	@Test
-	public void aBlockedMemberIsStillVisibleToEveryoneElse() throws Exception {
+	public void hasMember_whenThirdMemberLooksUpBlockedMember_returnsTrue() throws Exception {
 		sn = new SocialNetwork();
 		me = sn.join("Hakan");
 		sn.join("Cecile");
@@ -452,7 +452,7 @@ public class SocialNetworkTest {
 	}
 
 	@Test
-	public void blockingHidesTheBlockerFromTheBlockedMemberOnly() throws Exception {
+	public void listMembers_whenBlockedMemberLoggedIn_excludesBlockerOnly() throws Exception {
 		sn = new SocialNetwork();
 		me = sn.join("Hakan");
 		her = sn.join("Cecile");
@@ -467,7 +467,7 @@ public class SocialNetworkTest {
 	}
 
 	@Test
-	public void blockingYourselfDoesNotMakeYouInvisibleToYourself() throws Exception {
+	public void hasMember_whenBlockSelf_returnsTrue() throws Exception {
 		sn = new SocialNetwork();
 		me = sn.join("Hakan");
 		sn.login(me);
@@ -477,7 +477,7 @@ public class SocialNetworkTest {
 	}
 
 	@Test
-	public void twoMembersCanBlockEachOther() throws Exception {
+	public void block_whenMutualBlock_hidesEachOther() throws Exception {
 		sn = new SocialNetwork();
 		me = sn.join("Hakan");
 		her = sn.join("Cecile");
@@ -493,7 +493,7 @@ public class SocialNetworkTest {
 	// ----- T6: unblock, further cases -----
 
 	@Test
-	public void unblockingTwiceIsHarmless() throws Exception {
+	public void unblock_whenSameMemberTwice_isIdempotent() throws Exception {
 		sn = new SocialNetwork();
 		me = sn.join("Hakan");
 		her = sn.join("Cecile");
@@ -506,7 +506,7 @@ public class SocialNetworkTest {
 	}
 
 	@Test
-	public void unblockingSomeoneWhoIsNotAMemberIsHarmless() throws Exception {
+	public void unblock_whenNotAMember_doesNothing() throws Exception {
 		sn = new SocialNetwork();
 		me = sn.join("Hakan");
 		her = sn.join("Cecile");
@@ -517,7 +517,7 @@ public class SocialNetworkTest {
 	}
 
 	@Test
-	public void aMemberCanBeBlockedAgainAfterBeingUnblocked() throws Exception {
+	public void block_whenAfterUnblock_hidesBlockerAgain() throws Exception {
 		sn = new SocialNetwork();
 		me = sn.join("Hakan");
 		her = sn.join("Cecile");
@@ -530,7 +530,7 @@ public class SocialNetworkTest {
 	}
 
 	@Test
-	public void unblockingOnlyAffectsTheMemberWhoIssuedTheBlock() throws Exception {
+	public void unblock_whenOnlyOneMemberUnblocks_leavesOtherBlockInPlace() throws Exception {
 		sn = new SocialNetwork();
 		me = sn.join("Hakan");
 		her = sn.join("Cecile");
@@ -546,7 +546,7 @@ public class SocialNetworkTest {
 	}
 
 	@Test
-	public void cancelAutoAcceptFriendshipsStopsFutureAutoAcceptance() throws Exception {
+	public void cancelAutoAcceptFriendships_whenEnabled_stopsFutureAutoAcceptance() throws Exception {
 		sn = new SocialNetwork();
 		me = sn.join("Hakan");
 		her = sn.join("Cecile");
@@ -564,7 +564,7 @@ public class SocialNetworkTest {
 	}
 
 	@Test
-	public void cancelAutoAcceptFriendshipsRequiresExplicitAcceptanceAfter() throws Exception {
+	public void cancelAutoAcceptFriendships_whenEnabled_requiresExplicitAcceptance() throws Exception {
 		sn = new SocialNetwork();
 		me = sn.join("Hakan");
 		her = sn.join("Cecile");
@@ -579,7 +579,7 @@ public class SocialNetworkTest {
 	}
 
 	@Test
-	public void cancelAutoAcceptFriendshipsWhenNotEnabled() throws Exception {
+	public void cancelAutoAcceptFriendships_whenNotEnabled_doesNothing() throws Exception {
 		sn = new SocialNetwork();
 		me = sn.join("Hakan");
 		sn.login(me);
@@ -591,7 +591,7 @@ public class SocialNetworkTest {
 	}
 
 	@Test
-	public void multipleToggleBetweenAutoAcceptAndCancel() throws Exception {
+	public void autoAcceptFriendships_whenToggledMultipleTimes_togglesBehavior() throws Exception {
 		sn = new SocialNetwork();
 		me = sn.join("Hakan");
 		her = sn.join("Cecile");
