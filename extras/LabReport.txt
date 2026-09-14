@@ -7,7 +7,7 @@ Andrew ID:
 
 In this lab, I changed the SocialNetwork class to implement ISocialNetwork and gradually moved the application to a login-based API. I completed tasks T1 through T10. The tasks included login, member visibility, blocking and unblocking, auto-accept cancellation, friend recommendations, cleanup of friendships after blocking, and NoUserLoggedInException.
 
-I ended up with 64 tests: 10 tests in AccountTest and 54 tests in SocialNetworkTest. All of my tests pass.
+I ended up with 69 tests: 10 tests in AccountTest and 59 tests in SocialNetworkTest. All of my tests pass.
 
 2. What worked well?
 
@@ -27,3 +27,10 @@ Next time, I would create small helper methods for common actions such as sendin
 
 - The assignment requires both the old API and the new login-based API during the transition, which can make the code and tests difficult to follow.
 - The checked exception requirement is important for the hidden tests, so it would be helpful to emphasize earlier that the exception must be declared in ISocialNetwork.
+
+
+Important commands -->
+
+javac -cp .:/usr/local/vocareum/vlibs/java/junit-4.12.jar src/*.java test/*.java
+
+java -cp .:src:test:/usr/local/vocareum/vlibs/java/junit-4.12.jar:/usr/local/vocareum/vlibs/java/hamcrest-core-1.3.jar org.junit.runner.JUnitCore TestClassName

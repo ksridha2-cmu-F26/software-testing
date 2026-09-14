@@ -758,4 +758,79 @@ public class SocialNetworkTest {
 		});
 	}
 
+	@Test
+	public void join_whenNameIsNullOrEmptyOrDuplicate_returnsNull() {
+		sn = new SocialNetwork();
+		assertNull(sn.join(null));
+		assertNull(sn.join(""));
+		assertNotNull(sn.join("Hakan"));
+		assertNull(sn.join("Hakan"));
+	}
+
+	@Test
+	public void networkOperations_whenUserNameIsInvalid_leaveStateUnchanged() throws Exception {
+		sn = new SocialNetwork();
+		me = sn.join("Hakan");
+		her = sn.join("Cecile");
+		sn.login(me);
+
+		sn.sendFriendshipTo(null);
+		sn.sendFriendshipTo("Ghost");
+		sn.acceptFriendshipFrom(null);
+		sn.acceptFriendshipFrom("Ghost");
+		sn.rejectFriendshipFrom(null);
+		sn.rejectFriendshipFrom("Ghost");
+		sn.sendFriendshipCancellationTo(null);
+		sn.sendFriendshipCancellationTo("Ghost");
+
+		assertTrue(me.getIncomingRequests().isEmpty());
+		assertTrue(her.getIncomingRequests().isEmpty());
+	}
+
+	@Test
+	public void sendFriendshipCancellationTo_whenFriends_removesFriendshipFromBothAccounts() throws Exception {
+		sn = new SocialNetwork();
+		me = sn.join("Hakan");
+		her = sn.join("Cecile");
+		sn.sendFriendshipTo("Hakan", her);
+		sn.acceptFriendshipFrom("Cecile", me);
+		sn.login(me);
+		sn.sendFriendshipCancellationTo("Cecile");
+		assertFalse(me.hasFriend("Cecile"));
+		assertFalse(her.hasFriend("Hakan"));
+	}
+
+	@Test
+	public void leave_whenLoggedInMemberLeaves_removesMemberAndClearsLogin() throws Exception {
+		sn = new SocialNetwork();
+		me = sn.join("Hakan");
+		her = sn.join("Cecile");
+		sn.login(me);
+		sn.leave();
+		sn.login(her);
+		assertFalse(sn.hasMember("Hakan"));
+	}
+
+	@Test
+	public void recommendFriends_whenCandidateIsBlocked_doesNotReturnCandidate() throws Exception {
+		sn = new SocialNetwork();
+		me = sn.join("Hakan");
+		her = sn.join("Cecile");
+		another = sn.join("Serra");
+		Account candidate = sn.join("Priya");
+
+		sn.sendFriendshipTo("Hakan", her);
+		sn.acceptFriendshipFrom("Cecile", me);
+		sn.sendFriendshipTo("Hakan", another);
+		sn.acceptFriendshipFrom("Serra", me);
+		sn.sendFriendshipTo("Cecile", candidate);
+		sn.acceptFriendshipFrom("Priya", her);
+		sn.sendFriendshipTo("Serra", candidate);
+		sn.acceptFriendshipFrom("Priya", another);
+
+		sn.login(me);
+		sn.block("Priya");
+		assertFalse(sn.recommendFriends().contains("Priya"));
+	}
+
 }
