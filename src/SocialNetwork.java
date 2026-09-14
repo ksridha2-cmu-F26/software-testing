@@ -10,6 +10,12 @@ public class SocialNetwork implements ISocialNetwork {
 		return loggedInUser != null;
 	}
 
+	private void requireLoggedIn() throws NoUserLoggedInException {
+		if (!isLoggedIn()) {
+			throw new NoUserLoggedInException();
+		}
+	}
+
 	private Account findAccountForUserName(String userName) {
 		for (Account each : accounts) {
 			if (each.getUserName().equals(userName)) {
@@ -58,11 +64,9 @@ public class SocialNetwork implements ISocialNetwork {
 	}
 
 	@Override
-	public Set<String> listMembers() {
+	public Set<String> listMembers() throws NoUserLoggedInException {
+		requireLoggedIn();
 		Set<String> members = new HashSet<String>();
-		if (!isLoggedIn()) {
-			return members;
-		}
 		for (Account each : accounts) {
 			if (isVisibleToLoggedInUser(each)) {
 				members.add(each.getUserName());
@@ -72,16 +76,18 @@ public class SocialNetwork implements ISocialNetwork {
 	}
 
 	@Override
-	public boolean hasMember(String userName) {
-		if (!isLoggedIn() || userName == null || userName.isEmpty()) {
+	public boolean hasMember(String userName) throws NoUserLoggedInException {
+		requireLoggedIn();
+		if (userName == null || userName.isEmpty()) {
 			return false;
 		}
 		return isVisibleToLoggedInUser(findAccountForUserName(userName));
 	}
 
 	@Override
-	public void sendFriendshipTo(String userName) {
-		if (!isLoggedIn() || userName == null) {
+	public void sendFriendshipTo(String userName) throws NoUserLoggedInException {
+		requireLoggedIn();
+		if (userName == null) {
 			return;
 		}
 		Account target = findAccountForUserName(userName);
@@ -92,24 +98,27 @@ public class SocialNetwork implements ISocialNetwork {
 	}
 
 	@Override
-	public void block(String userName) {
-		if (!isLoggedIn() || userName == null) {
+	public void block(String userName) throws NoUserLoggedInException {
+		requireLoggedIn();
+		if (userName == null) {
 			return;
 		}
 		loggedInUser.block(userName);
 	}
 
 	@Override
-	public void unblock(String userName) {
-		if (!isLoggedIn() || userName == null) {
+	public void unblock(String userName) throws NoUserLoggedInException {
+		requireLoggedIn();
+		if (userName == null) {
 			return;
 		}
 		loggedInUser.unblock(userName);
 	}
 
 	@Override
-	public void sendFriendshipCancellationTo(String userName) {
-		if (!isLoggedIn() || userName == null) {
+	public void sendFriendshipCancellationTo(String userName) throws NoUserLoggedInException {
+		requireLoggedIn();
+		if (userName == null) {
 			return;
 		}
 		Account friend = findAccountForUserName(userName);
@@ -119,8 +128,9 @@ public class SocialNetwork implements ISocialNetwork {
 	}
 
 	@Override
-	public void acceptFriendshipFrom(String userName) {
-		if (!isLoggedIn() || userName == null) {
+	public void acceptFriendshipFrom(String userName) throws NoUserLoggedInException {
+		requireLoggedIn();
+		if (userName == null) {
 			return;
 		}
 		Account requester = findAccountForUserName(userName);
@@ -130,18 +140,17 @@ public class SocialNetwork implements ISocialNetwork {
 	}
 
 	@Override
-	public void acceptAllFriendships() {
-		if (!isLoggedIn()) {
-			return;
-		}
+	public void acceptAllFriendships() throws NoUserLoggedInException {
+		requireLoggedIn();
 		for (String requesterName : new HashSet<String>(loggedInUser.getIncomingRequests())) {
 			acceptFriendshipFrom(requesterName);
 		}
 	}
 
 	@Override
-	public void rejectFriendshipFrom(String userName) {
-		if (!isLoggedIn() || userName == null) {
+	public void rejectFriendshipFrom(String userName) throws NoUserLoggedInException {
+		requireLoggedIn();
+		if (userName == null) {
 			return;
 		}
 		Account requester = findAccountForUserName(userName);
@@ -151,83 +160,80 @@ public class SocialNetwork implements ISocialNetwork {
 	}
 
 	@Override
-	public void rejectAllFriendships() {
-		if (!isLoggedIn()) {
-			return;
-		}
+	public void rejectAllFriendships() throws NoUserLoggedInException {
+		requireLoggedIn();
 		for (String requesterName : new HashSet<String>(loggedInUser.getIncomingRequests())) {
 			rejectFriendshipFrom(requesterName);
 		}
 	}
 
 	@Override
-	public void autoAcceptFriendships() {
-		if (!isLoggedIn()) {
-			return;
-		}
+	public void autoAcceptFriendships() throws NoUserLoggedInException {
+		requireLoggedIn();
 		loggedInUser.autoAcceptFriendships();
 	}
 
 	@Override
-	public void cancelAutoAcceptFriendships() {
-		if (!isLoggedIn()) {
-			return;
-		}
+	public void cancelAutoAcceptFriendships() throws NoUserLoggedInException {
+		requireLoggedIn();
 		loggedInUser.cancelAutoAcceptFriendships();
 	}
 
 	@Override
-	public Set<String> recommendFriends() {
+	public Set<String> recommendFriends() throws NoUserLoggedInException {
+		requireLoggedIn();
 		return new HashSet<String>();
 	}
 
 	@Override
-	public void leave() {
+	public void leave() throws NoUserLoggedInException {
+		requireLoggedIn();
+		leave(loggedInUser);
 	}
 
-	public void sendFriendshipTo(String userName, Account me) {
+	public void sendFriendshipTo(String userName, Account me) throws NoUserLoggedInException {
 		Account previous = loggedInUser;
 		loggedInUser = me;
 		sendFriendshipTo(userName);
 		loggedInUser = previous;
 	}
 
-	public void acceptFriendshipFrom(String userName, Account me) {
+	public void acceptFriendshipFrom(String userName, Account me) throws NoUserLoggedInException {
 		Account previous = loggedInUser;
 		loggedInUser = me;
 		acceptFriendshipFrom(userName);
 		loggedInUser = previous;
 	}
 
-	public void acceptAllFriendshipsTo(Account me) {
+	public void acceptAllFriendshipsTo(Account me) throws NoUserLoggedInException {
 		Account previous = loggedInUser;
 		loggedInUser = me;
 		acceptAllFriendships();
 		loggedInUser = previous;
 	}
 
-	public void rejectFriendshipFrom(String userName, Account me) {
+	public void rejectFriendshipFrom(String userName, Account me) throws NoUserLoggedInException {
 		Account previous = loggedInUser;
 		loggedInUser = me;
 		rejectFriendshipFrom(userName);
 		loggedInUser = previous;
 	}
 
-	public void rejectAllFriendshipsTo(Account me) {
+	public void rejectAllFriendshipsTo(Account me) throws NoUserLoggedInException {
 		Account previous = loggedInUser;
 		loggedInUser = me;
 		rejectAllFriendships();
 		loggedInUser = previous;
 	}
 
-	public void autoAcceptFriendshipsTo(Account me) {
+	public void autoAcceptFriendshipsTo(Account me) throws NoUserLoggedInException {
 		Account previous = loggedInUser;
 		loggedInUser = me;
 		autoAcceptFriendships();
 		loggedInUser = previous;
 	}
 
-	public void sendFriendshipCancellationTo(String userName, Account me) {
+	public void sendFriendshipCancellationTo(String userName, Account me) throws NoUserLoggedInException {
 		Account previous = loggedInUser;
 		loggedInUser = me;
 		sendFriendshipCancellationTo(userName);
