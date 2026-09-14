@@ -6,32 +6,32 @@ public interface ISocialNetwork {
 
 	Account login(Account me);
 
-	Set<String> listMembers() throws NoUserLoggedInException;
+	Set<String> listMembers();
 
-	boolean hasMember(String userName) throws NoUserLoggedInException;
+	boolean hasMember(String userName);
 
-	void sendFriendshipTo(String userName) throws NoUserLoggedInException;
+	void sendFriendshipTo(String userName);
 
-	void block(String userName) throws NoUserLoggedInException;
+	void block(String userName);
 
-	void unblock(String userName) throws NoUserLoggedInException;
+	void unblock(String userName);
 
-	void sendFriendshipCancellationTo(String userName) throws NoUserLoggedInException;
+	void sendFriendshipCancellationTo(String userName);
 
-	void acceptFriendshipFrom(String userName) throws NoUserLoggedInException;
+	void acceptFriendshipFrom(String userName);
 
-	void acceptAllFriendships() throws NoUserLoggedInException;
+	void acceptAllFriendships();
 
-	void rejectFriendshipFrom(String userName) throws NoUserLoggedInException;
+	void rejectFriendshipFrom(String userName);
 
-	void rejectAllFriendships() throws NoUserLoggedInException;
+	void rejectAllFriendships();
 
-	void autoAcceptFriendships() throws NoUserLoggedInException;
+	void autoAcceptFriendships();
 
-	void cancelAutoAcceptFriendships() throws NoUserLoggedInException;
+	void cancelAutoAcceptFriendships();
 
-	Set<String> recommendFriends() throws NoUserLoggedInException;
+	Set<String> recommendFriends();
 
-	void leave() throws NoUserLoggedInException;
+	void leave();
 
 }

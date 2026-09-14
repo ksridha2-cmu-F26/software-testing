@@ -3,24 +3,26 @@ Name: [Your Name]
 Andrew ID: [Your Andrew ID]
 Partner (if any): [Partner Name / Solo]
 
-Tasks Completed: T1 through T10
+Tasks Completed So Far: T1 through T6
 
 TDD Approach:
-- T1: Made SocialNetwork implement ISocialNetwork using compile errors to add stubs; kept old A0 API.
-- T2: Added login tests first, then implemented login(Account).
-- T3-T7: Wrote/adapted tests before implementing hasMember, cancelAutoAcceptFriendships, block, unblock, recommendFriends.
-- T8: Added tests for blocking terminating friendships/requests, then implemented terminateRelationshipsBetween.
-- T9: Added expected-exception tests, then added throws to ISocialNetwork methods requiring login.
+- T1: Implemented ISocialNetwork stubs guided by compile errors; kept old A0 API.
+- T2: Wrote login tests first, then implemented login(Account).
+- T3: Tests for hasMember, then implementation with visibility rules.
+- T4: Tests for cancelAutoAcceptFriendships, then Account + SocialNetwork code.
+- T5: Tests for block behavior, then block(String) implementation.
+- T6: Tests for unblock, then unblock(String) implementation.
 
 Challenges:
-- Migrating from Account-parameter API to login-based API while keeping old tests passing via delegation.
-- Blocking visibility rules and recommendFriends filtering.
-- Adding throws to ISocialNetwork in T9 without breaking earlier compiles.
+- Migrating from Account-parameter API to login-based API (T2).
+- Understanding block visibility: blocked user cannot see blocker.
 
-Tests Added: login, hasMember, block/unblock, recommendFriends, cancelAutoAccept, T8 block-cleanup, T9 NoUserLoggedInException tests.
+Tests Added: login tests, hasMember tests, block/unblock tests, cancelAutoAccept tests.
 
-Outcome: All local unit tests pass.
+Outcome: Local unit tests pass for T1-T6 scope.
 
 Lessons Learned:
-- Small red-green-refactor steps made the API migration manageable.
-- Delegation let old and new API coexist during T2 migration.
+- TDD in small steps (one test, one fix) kept the lab manageable.
+- Login must be called before listMembers and other operations after T2.
+
+Not Yet Completed: T7 (recommendFriends), T8 (block cleanup), T9 (NoUserLoggedInException), T10 (final report polish).
