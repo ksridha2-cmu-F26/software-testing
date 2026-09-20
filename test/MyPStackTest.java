@@ -78,6 +78,67 @@ public class MyPStackTest {
 		verify(db).update(id, s.peek());
 	}
 
+	@Test
+	public void pop_whenRemovingLastElement_deletesDatabaseEntry()
+			throws OverflowException, InvalidOperationException {
+		String id = s.getId();
+		s.push(100);
+
+		s.pop();
+
+		verify(db).delete(id);
+	}
+
+	@Test
+	public void pop_whenStackIsEmpty_throwsExceptionWithoutDatabaseInteraction()
+			throws InvalidOperationException {
+		try {
+			s.pop();
+			fail("Expected InvalidOperationException");
+		} catch (InvalidOperationException expected) {
+			verifyNoInteractions(db);
+		}
+	}
+
+	@Test
+	public void push_whenStackIsFull_throwsExceptionWithoutDatabaseUpdate()
+			throws OverflowException {
+		for (int value = 0; value < s.maxSize(); value++) {
+			s.push(value);
+		}
+
+		try {
+			s.push(s.maxSize());
+			fail("Expected OverflowException");
+		} catch (OverflowException expected) {
+			verify(db, times(s.maxSize() - 1)).update(anyString(), anyInt());
+			verify(db, never()).update(anyString(), eq(s.maxSize()));
+		}
+	}
+
+	@Test
+	public void reset_whenStackIsNonEmpty_replacesStackWithDatabaseValue()
+			throws OverflowException, InvalidOperationException {
+		String id = s.getId();
+		s.push(100);
+		s.push(200);
+		when(db.read(id)).thenReturn(300);
+
+		s.reset();
+
+		assertThat(s.size(), is(equalTo(1)));
+		assertThat(s.peek(), is(equalTo(300)));
+		verify(db).read(id);
+	}
+
+	@Test
+	public void reset_whenStackIsEmpty_doesNothing() {
+		s.reset();
+
+		assertThat(s.isEmpty(), is(true));
+		verifyNoInteractions(db);
+	}
+
 	@Test 
 	public void resetReadWriteValueFromDBWhenStackIsNonEmpty() 
 			throws OverflowException, InvalidOperationException {

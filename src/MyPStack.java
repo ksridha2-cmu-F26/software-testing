@@ -58,6 +58,7 @@ public class MyPStack {
 	}
 
 	public void reset() {
+		if (isEmpty()) return;
 		top = -1;
 		if (db != null) {
 			stackArray[++top] = db.read(id);
