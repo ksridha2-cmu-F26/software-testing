@@ -1,0 +1,33 @@
+ASSIGNMENT REPORT - TEST DOUBLES
+
+Name: Karthik Sridhar
+Andrew ID:
+
+1. Why were test doubles necessary?
+
+SocialNetwork depends on an AccountDAO that represents an external persistent store, but the real DAO is intentionally unavailable. A fake makes generic behavior tests fast, deterministic, and independent of a database. Mocks and spies let tests verify that SocialNetwork invokes the required persistence operations even when the final database implementation does not exist.
+
+2. Advantages and disadvantages
+
+- Fake: a clone-backed in-memory store gave realistic behavior and exposed data-aliasing problems. It was simple and deterministic, but required more hand-written code.
+- Mock: Mockito made interaction verification concise and isolated SocialNetwork from storage behavior. It required explicit stubbing for every behavior needed by generic tests and could not prove that a real database would store data correctly.
+- Spy: the spy combined real fake behavior with Mockito verification. It required less stubbing than a mock, but it still inherits any defect in the wrapped fake and can make stateful interactions less isolated.
+
+3. Faults found
+
+- SocialNetwork had no dependency injection, so generic tests used the unimplemented real DAO.
+- AccountDAO was intentionally stubbed, so it could not support behavior tests.
+- AccountDAOFake did not store, clone, update, or delete accounts.
+- Account.requestFriendship compared a username against Account objects, so blocking did not prevent requests.
+- Account.equals could throw for non-Account values instead of returning false.
+- SocialNetwork.unblock did not remove the block.
+- SocialNetwork.leave did not delete the departing account.
+- acceptAllFriendships and rejectAllFriendships did not persist modified accounts.
+- recommendFriends lacked filtering for the current user, existing friends, and blocked members.
+- The mock and spy test classes were not configured with DAOs and all verification tests called fail().
+- The abstract account equality test was missing @Test.
+
+4. Suggestions
+
+- A small setup helper for constructing the selected DAO double would make the fixture easier to read.
+- The assignment could provide one example of configuring a stateful Mockito mock before the verification exercises.
