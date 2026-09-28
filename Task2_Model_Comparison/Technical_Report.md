@@ -1,7 +1,7 @@
 # A1: Investigating Bias in Code Smell Detection Models
 
 **Student:** Karthik Sridhar  
-**Course:** Software Testing
+**Course:** Data Science for Software Engineering
 
 ## Section 1: Study and Experimental Approach
 
